@@ -1,15 +1,38 @@
 const express = require('express')
+let bodyParser = require('body-parser')
 const app = express()
 const port = 3000
+let numberOfRequest = 0
+
+
+// app.use(middleware)
+
+// function middleware(req, res, next) {
+//   numberOfRequest+=1
+//   console.log(numberOfRequest)
+//   next()
+// }
+
+app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send(`<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+  </head>
+  <body>
+      <p>html page rendered</p>
+  </body>
+  </html> `)
 })
 
 app.get('/calculate', (req, res) => {
     let value = req.query.count
     let number = calculateSum(value);
-    res.send('The sum is ' + number)
+    res.send({'The sum is ' :  number})
 })
 
 // app.get('/number', (req, res) => {       thinks you are sending status code
@@ -17,8 +40,12 @@ app.get('/calculate', (req, res) => {
 // })
 
 app.post('/post', (req, res) => {
-    const postData = req.body
-    res.send('post created successfully')
+    console.log(req.body)
+    const postData = req.body.counter
+    res.status(200).send({
+      sum : calculateSum(postData),
+      mul : calculateMul(postData)
+    })
 })
 
 app.listen(port, () => {
@@ -31,4 +58,12 @@ function calculateSum(value) {
         sum+=i;
     }
     return sum
+}
+
+function calculateMul(value) {
+  let mul = 1;
+  for (let i=1; i<=value; i++) {
+    mul*=i;
+  }
+  return mul
 }
